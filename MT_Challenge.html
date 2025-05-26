@@ -212,7 +212,7 @@
 				align-items: center;
 			}
 
-		#time-taken {
+		#time-taken, #score-display {
 			margin: 0 auto;
 			padding: 0;
 
@@ -314,7 +314,10 @@
 
 			<p class="p_titles">Time Taken:</p>
 			<p id="time-taken"></p>
+			<div style="min-height: 2rem;"></div>
 
+			<p class="p_titles">Score:</p>
+			<p id="score-display"></p>
 			<div style="min-height: 4rem;"></div>
 		  
 			<!-- <div id="incorrect-container"> -->
@@ -482,6 +485,13 @@
 
 			document.getElementById("time-taken").textContent = fun_FormatTime(int_TimeDiff);
 
+			// Calculate and display score
+			const int_TotalQuestions = arr_Questions.length;
+			const int_CorrectQuestions = int_TotalQuestions - arr_IncorrectQuestions.length;
+			const int_Percentage = Math.round((int_CorrectQuestions / int_TotalQuestions) * 100);
+			
+			document.getElementById("score-display").textContent = int_CorrectQuestions + "/" + int_TotalQuestions + " (" + int_Percentage + "%)";
+
 			// Display the list of incorrectly answered questions
 			const ele_IncorrectList = document.getElementById("incorrect-list");
 
@@ -524,10 +534,20 @@
 		}
   	
 		async function fun_ExportResults() {
+			// Calculate score for export
+			const int_TotalQuestions = arr_Questions.length;
+			const int_CorrectQuestions = int_TotalQuestions - arr_IncorrectQuestions.length;
+			const int_Percentage = Math.round((int_CorrectQuestions / int_TotalQuestions) * 100);
+
 			// Build the results object for JSON
 			const arr_Results = {
 				attempt: int_Attempt,
 				timeTakenSeconds: int_TimeDiff,
+				score: {
+					correct: int_CorrectQuestions,
+					total: int_TotalQuestions,
+					percentage: int_Percentage
+				},
 				incorrectAnswers: []
 			};
 			
